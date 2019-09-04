@@ -19,7 +19,7 @@ bool gp[] = {true, false, false};
 byte b[] = {blueMin, (blueMax + blueMin)/2, blueMax};
 bool bp[] = {true, true, false};
 
-#define DELAY_TIME 50
+#define DELAY_TIME 120
 
 void setup() 
 {
