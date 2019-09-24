@@ -13,13 +13,13 @@ Adafruit_NeoPixel pixels(3, 3, NEO_GRB+NEO_KHZ800);
 #define blueMax   255
 
 byte r[] = {redMin, (redMax + redMin)/2, redMax};
-bool rp[] = {true, true, false};
+bool rp[] = {true, true, false}; // is the red value for each pixel increasing or decreasing?
 byte g[] = {greenMin, (greenMax + greenMin)/2, greenMax};
-bool gp[] = {true, false, false};
+bool gp[] = {true, false, false};// is the green value for each pixel increasing or decreasing?
 byte b[] = {blueMin, (blueMax + blueMin)/2, blueMax};
-bool bp[] = {true, true, false};
+bool bp[] = {false, true, true}; // is the blue value for each pixel increasing or decreasing?
 
-#define DELAY_TIME 120
+#define DELAY_TIME 20
 
 void setup() 
 {
@@ -35,6 +35,7 @@ void setup()
 
 void loop() 
 {
+  // foreach pixel in the array...
   for(int i=0; i < 3; i++)
   {
     // set the pixel color
@@ -46,11 +47,11 @@ void loop()
     b[i] = bp[i] ? b[i]+1 : b[i]-1;
 
     // alternate the direction of increment/decrement if one of the bounds has been reached.
-    if(r[i] == redMax || r[i] == redMin)
+    if(r[i] >= redMax || r[i] <= redMin)
       rp[i] = !rp[i];
-    if(g[i] == greenMax || g[i] == greenMin)
+    if(g[i] >= greenMax || g[i] <= greenMin)
       gp[i] = !gp[i];
-    if(b[i] == blueMax || b[i] == blueMin)
+    if(b[i] >= blueMax || b[i] <= blueMin)
       bp[i] = !bp[i];
   }
   
