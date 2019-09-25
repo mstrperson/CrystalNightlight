@@ -5,19 +5,19 @@
 
 Adafruit_NeoPixel pixels(3, 3, NEO_GRB+NEO_KHZ800);
 
-#define redMin    10
-#define redMax    255
-#define greenMin  96
-#define greenMax  255
-#define blueMin   180
-#define blueMax   255
+const byte redMin[3]    = { 254, 100, 0   };
+const byte redMax[3]    = { 255, 255, 1   };
+const byte greenMin[3]  = { 0 , 0 , 100 };
+const byte greenMax[3]  = { 1 , 255, 255 };
+const byte blueMin[3]   = { 0 , 0 , 254 };
+const byte blueMax[3]   = { 255, 0 , 255 };
 
-byte r[] = {redMin, (redMax + redMin)/2, redMax};
+byte r[] = {redMin[0], (redMax[1] + redMin[1])/2, redMax[2]};
 bool rp[] = {true, true, false}; // is the red value for each pixel increasing or decreasing?
-byte g[] = {greenMin, (greenMax + greenMin)/2, greenMax};
+byte g[] = {greenMin[0], (greenMax[1] + greenMin[1])/2, greenMax[2]};
 bool gp[] = {true, false, false};// is the green value for each pixel increasing or decreasing?
-byte b[] = {blueMin, (blueMax + blueMin)/2, blueMax};
-bool bp[] = {false, true, true}; // is the blue value for each pixel increasing or decreasing?
+byte b[] = {blueMin[0], (blueMax[1] + blueMin[1])/2, blueMax[2]};
+bool bp[] = {true, true, false}; // is the blue value for each pixel increasing or decreasing?
 
 #define DELAY_TIME 20
 
@@ -47,11 +47,11 @@ void loop()
     b[i] = bp[i] ? b[i]+1 : b[i]-1;
 
     // alternate the direction of increment/decrement if one of the bounds has been reached.
-    if(r[i] >= redMax || r[i] <= redMin)
+    if(r[i] >= redMax[i] || r[i] <= redMin[i])
       rp[i] = !rp[i];
-    if(g[i] >= greenMax || g[i] <= greenMin)
+    if(g[i] >= greenMax[i] || g[i] <= greenMin[i])
       gp[i] = !gp[i];
-    if(b[i] >= blueMax || b[i] <= blueMin)
+    if(b[i] >= blueMax[i] || b[i] <= blueMin[i])
       bp[i] = !bp[i];
   }
   
