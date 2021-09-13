@@ -3,7 +3,13 @@
  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
 
-Adafruit_NeoPixel pixels(3, 3, NEO_GRB+NEO_KHZ800);
+#include <AnalogSensor.h>
+
+AnalogSensor ldr(A0, 100, 5, 300);
+
+#define LED_COUNT 16
+
+Adafruit_NeoPixel pixels(LED_COUNT, 6, NEO_GRB+NEO_KHZ800);
 
 const byte redMin[3]    = { 254, 100, 0   };
 const byte redMax[3]    = { 255, 255, 1   };
@@ -11,6 +17,8 @@ const byte greenMin[3]  = { 0 , 0 , 100 };
 const byte greenMax[3]  = { 1 , 255, 255 };
 const byte blueMin[3]   = { 0 , 0 , 254 };
 const byte blueMax[3]   = { 255, 0 , 255 };
+
+int brF = 33;
 
 byte r[] = {redMin[0], (redMax[1] + redMin[1])/2, redMax[2]};
 bool rp[] = {true, true, false}; // is the red value for each pixel increasing or decreasing?
@@ -30,16 +38,49 @@ void setup()
 #endif
   // END of Trinket-specific code.
 
+  Serial.begin(9600);
+
+  pinMode(2, INPUT);
+
+  Serial.println("led\tcolor\tcount");
+  
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
 }
 
+int led = 0;
+
 void loop() 
 {
-  // foreach pixel in the array...
-  for(int i=0; i < 3; i++)
+  //Serial.println("beginning loop");
+  ldr.update();
+
+  int brightness = ldr.getValue();
+
+  if(led%(random(5)+20) == 0)
   {
+    brightness += brightness/brF;
+  }
+  else if(led%(random(15)+10) == 0)
+  {
+    brightness -= brightness/brF;
+  }
+  
+  //Serial.println("set brightness");
+  // foreach pixel in the array...
+  //for(int j=0; j < 16; j++)
+  //{
+  
+    int j = led%LED_COUNT;
+    int i = j%3;
+    led = ++led % (LED_COUNT*3);
+
+    Serial.print(j);
+    Serial.print("\t");
+    Serial.print(i);
+    Serial.print("\t");
+    Serial.println(led);
     // set the pixel color
-    pixels.setPixelColor(i, pixels.Color(r[i], g[i], b[i]));
+    pixels.setPixelColor(j, pixels.Color(r[i], g[i], b[i]));
 
     // increment or decrement the color values based on the current state
     r[i] = rp[i] ? r[i]+1 : r[i]-1;
@@ -53,8 +94,14 @@ void loop()
       gp[i] = !gp[i];
     if(b[i] >= blueMax[i] || b[i] <= blueMin[i])
       bp[i] = !bp[i];
-  }
+  //}
+
+  if(digitalRead(2) == LOW) 
+    pixels.setBrightness(brightness);
+  else
+    pixels.setBrightness(0);
   
+  //Serial.println("Colors set...");
   // show the pixels
   pixels.show();
   
