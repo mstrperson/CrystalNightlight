@@ -7,9 +7,9 @@
 
 AnalogSensor ldr(A0, 100, 5, 300);
 
-#define LED_COUNT 16
+#define LED_COUNT 10
 
-Adafruit_NeoPixel pixels(LED_COUNT, 6, NEO_GRB+NEO_KHZ800);
+Adafruit_NeoPixel pixels(LED_COUNT, 8, NEO_GRB+NEO_KHZ800);
 
 const byte redMin[3]    = { 254, 100, 0   };
 const byte redMax[3]    = { 255, 255, 1   };
