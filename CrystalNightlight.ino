@@ -3,20 +3,16 @@
  #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
 #endif
 
-#include <AnalogSensor.h>
+#define LED_COUNT 6
 
-AnalogSensor ldr(A0, 100, 5, 300);
-
-#define LED_COUNT 10
-
-Adafruit_NeoPixel pixels(LED_COUNT, 8, NEO_GRB+NEO_KHZ800);
+Adafruit_NeoPixel pixels(LED_COUNT, 3, NEO_GRB+NEO_KHZ800);
 
 const byte redMin[3]    = { 254, 100, 0   };
 const byte redMax[3]    = { 255, 255, 1   };
-const byte greenMin[3]  = { 0 , 0 , 100 };
-const byte greenMax[3]  = { 1 , 255, 255 };
-const byte blueMin[3]   = { 0 , 0 , 254 };
-const byte blueMax[3]   = { 255, 0 , 255 };
+const byte greenMin[3]  = { 0 , 0 , 0 };
+const byte greenMax[3]  = { 1 , 80, 100 };
+const byte blueMin[3]   = { 200 , 100 , 254 };
+const byte blueMax[3]   = { 255, 200 , 255 };
 
 int brF = 33;
 
@@ -38,12 +34,6 @@ void setup()
 #endif
   // END of Trinket-specific code.
 
-  Serial.begin(9600);
-
-  pinMode(2, INPUT);
-
-  Serial.println("led\tcolor\tcount");
-  
   pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
 }
 
@@ -51,19 +41,7 @@ int led = 0;
 
 void loop() 
 {
-  //Serial.println("beginning loop");
-  ldr.update();
 
-  int brightness = ldr.getValue();
-
-  if(led%(random(5)+20) == 0)
-  {
-    brightness += brightness/brF;
-  }
-  else if(led%(random(15)+10) == 0)
-  {
-    brightness -= brightness/brF;
-  }
   
   //Serial.println("set brightness");
   // foreach pixel in the array...
@@ -74,11 +52,6 @@ void loop()
     int i = j%3;
     led = ++led % (LED_COUNT*3);
 
-    Serial.print(j);
-    Serial.print("\t");
-    Serial.print(i);
-    Serial.print("\t");
-    Serial.println(led);
     // set the pixel color
     pixels.setPixelColor(j, pixels.Color(r[i], g[i], b[i]));
 
@@ -96,10 +69,6 @@ void loop()
       bp[i] = !bp[i];
   //}
 
-  if(digitalRead(2) == LOW) 
-    pixels.setBrightness(brightness);
-  else
-    pixels.setBrightness(0);
   
   //Serial.println("Colors set...");
   // show the pixels
